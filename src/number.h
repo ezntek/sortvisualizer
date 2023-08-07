@@ -27,15 +27,15 @@ typedef struct NumberArray {
 Number make_number(int, size_t);
 Number* new_number(int, size_t);
 
-void render_number(Number*, bool);
-void set_number_value(Number*, int);
+void number_render(Number*, bool);
+void number_set_value(Number*, int);
 void number_free(Number*);
 
 NumberArray* new_number_array(Number**, size_t);
 NumberArray* new_number_array_random(int, int);
 
-void render_number_array(NumberArray*);
+void number_array_render(NumberArray*);
 Number* number_array_get(NumberArray*, size_t);
-bool number_array_set(NumberArray*, size_t, Number*);
-bool number_array_swap(NumberArray*, size_t, size_t);
+void number_array_set(NumberArray*, size_t, Number*);
+void number_array_swap(NumberArray*, size_t, size_t);
 void number_array_free(NumberArray*);

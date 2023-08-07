@@ -24,7 +24,28 @@ void bubble_sort(NumberArray* num_arr) {
 
             BeginDrawing();
             ClearBackground(BLACK);
-            render_number_array(num_arr);
+            number_array_render(num_arr);
+            EndDrawing();
+
+            usleep((ARR_ACCESS_DELAY * 1000));
+        }
+    }
+}
+
+void insert_sort(NumberArray* num_arr) {
+    size_t arr_len = num_arr->length;
+
+    for (size_t i = 1; i < arr_len; i++) {
+        size_t j = i;
+
+        while (j > 0 && number_array_get(num_arr, j - 1)->value >
+                            number_array_get(num_arr, j)->value) {
+            number_array_swap(num_arr, j, j - 1);
+            j--;
+
+            BeginDrawing();
+            ClearBackground(BLACK);
+            number_array_render(num_arr);
             EndDrawing();
 
             usleep((ARR_ACCESS_DELAY * 1000));
@@ -49,7 +70,7 @@ void select_sort(NumberArray* num_arr) {
 
         BeginDrawing();
         ClearBackground(BLACK);
-        render_number_array(num_arr);
+        number_array_render(num_arr);
         EndDrawing();
 
         usleep((ARR_ACCESS_DELAY * 1000));

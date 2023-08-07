@@ -25,7 +25,7 @@ Number* new_number(int value, size_t idx) {
     return result;
 }
 
-void render_number(Number* bar, bool is_target) {
+void number_render(Number* bar, bool is_target) {
     Color rect_color = WHITE;
     if (is_target) {
         rect_color = RED;
@@ -34,7 +34,7 @@ void render_number(Number* bar, bool is_target) {
     DrawRectangleRec(bar->inner_rect, rect_color);
 }
 
-void set_number_value(Number* bar, int new_val) {
+void number_set_value(Number* bar, int new_val) {
     int new_height = new_val * HEIGHT_SCALE_FACTOR;
     int new_y = WIN_HEIGHT - new_height;
 
@@ -69,48 +69,43 @@ NumberArray* new_number_array_random(int count, int max) {
     return res;
 }
 
-void render_number_array(NumberArray* num_arr) {
+void number_array_render(NumberArray* num_arr) {
     for (size_t idx = 0; idx < num_arr->length; idx++) {
+        printf("%d: ", (int)idx);
         Number* num = number_array_get(num_arr, idx);
-        render_number(num, false); // FIXME: whatever this is
+        number_render(num, false); // FIXME: whatever this is
+        printf("%d, ", num->value);
     }
+    printf("\n\n");
 }
 
-void refresh_number_array(NumberArray* num_arr) { return; }
-
 Number* number_array_get(NumberArray* num_arr, size_t idx) {
-    if (idx > num_arr->length) {
-        return NULL;
+    if (idx > num_arr->length || idx < 0) {
+        printf("Attemped to get invalid index %d out of array, exiting.\n",
+               (int)idx);
+        exit(1);
     }
 
     return num_arr->_bars[idx];
 }
 
-bool number_array_set(NumberArray* num_arr, size_t idx, Number* new_val) {
-    if (idx > num_arr->length) {
-        return false;
+void number_array_set(NumberArray* num_arr, size_t idx, Number* new_val) {
+    if (idx > num_arr->length || idx < 0) {
+        puts("Attempet to set an item at an invalid index in the array, "
+             "exiting.");
+        exit(1);
     }
 
     num_arr->_bars[idx] = new_val;
-    return true;
 }
 
-bool number_array_swap(NumberArray* num_arr, size_t idx1, size_t idx2) {
+void number_array_swap(NumberArray* num_arr, size_t idx1, size_t idx2) {
     Number* a = number_array_get(num_arr, idx1);
-
-    if (a == NULL)
-        return false;
-
     Number* b = number_array_get(num_arr, idx2);
 
-    if (b == NULL)
-        return false;
-
     int tmp = a->value;
-    set_number_value(a, b->value);
-    set_number_value(b, tmp);
-
-    return true;
+    number_set_value(a, b->value);
+    number_set_value(b, tmp);
 }
 
 void number_array_free(NumberArray* num_arr) {
