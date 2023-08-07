@@ -7,7 +7,7 @@ dependencies = [
 ]
 
 sources = [
-  'src/sortvisualizer.c',
+  'src/main.c',
   'src/number.c',
 ]
 

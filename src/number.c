@@ -4,18 +4,14 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "../config.h"
 #include "number.h"
 
-const int WIN_WIDTH = 1200;
-const int WIN_HEIGHT = 800;
-const int BARS_PADDING = 2;
-const int HEIGHT_SCALE_FACTOR = 2;
-
 Number make_number(int value, size_t idx) {
-    int width = WIN_WIDTH / 100 - (BARS_PADDING * 2);
-    int height = value * HEIGHT_SCALE_FACTOR;
-    int x = (idx * width) + (BARS_PADDING * idx);
-    int y = WIN_HEIGHT - height;
+    float width = (float)WIN_WIDTH / ELEMS - BARS_PADDING;
+    float height = value * HEIGHT_SCALE_FACTOR;
+    float x = (idx * width) + (BARS_PADDING * idx);
+    float y = WIN_HEIGHT - height;
 
     Rectangle rect = (Rectangle){x, y, width, height};
 
@@ -46,6 +42,8 @@ void set_number_value(Number* bar, int new_val) {
     bar->inner_rect.y = new_y;
     bar->value = new_val;
 };
+
+void number_free(Number* number) { free(number); }
 
 NumberArray* new_number_array(Number** num_array, size_t len) {
     Number** arr = malloc(sizeof(num_array) * len);
@@ -80,9 +78,7 @@ void render_number_array(NumberArray* num_arr) {
     for (size_t idx = 0; idx < num_arr->length; idx++) {
         Number* num = number_array_get(num_arr, idx);
         render_number(num, false); // FIXME: whatever this is
-        printf("%d, ", num->value);
     }
-    printf("\n");
 }
 
 void refresh_number_array(NumberArray* num_arr) { return; }
@@ -120,4 +116,13 @@ bool number_array_swap(NumberArray* num_arr, size_t idx1, size_t idx2) {
     set_number_value(b, tmp);
 
     return true;
+}
+
+void number_array_free(NumberArray* num_arr) {
+    for (size_t idx = 0; idx < num_arr->length; idx++) {
+        Number* num = number_array_get(num_arr, idx);
+        if (num != NULL)
+            free(num);
+    };
+    free(num_arr);
 }
