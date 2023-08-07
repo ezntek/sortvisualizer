@@ -71,12 +71,9 @@ NumberArray* new_number_array_random(int count, int max) {
 
 void number_array_render(NumberArray* num_arr) {
     for (size_t idx = 0; idx < num_arr->length; idx++) {
-        printf("%d: ", (int)idx);
         Number* num = number_array_get(num_arr, idx);
         number_render(num, false); // FIXME: whatever this is
-        printf("%d, ", num->value);
     }
-    printf("\n\n");
 }
 
 Number* number_array_get(NumberArray* num_arr, size_t idx) {
