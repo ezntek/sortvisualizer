@@ -58,15 +58,20 @@ NumberArray* new_number_array(Number** num_array, size_t len) {
 }
 
 NumberArray* new_number_array_random(int count, int max) {
+    int i, j;
     srand(time(NULL));
     Number** arr = malloc(sizeof(Number) * count);
-    for (size_t i = 0; i < count; i++) {
-        int randval = ((float)(rand()) / RAND_MAX) * max;
-        arr[i] = new_number(randval, i);
-    }
+    for (size_t i = 0; i < count; i++)
+        arr[i] = new_number(i*2, i);
 
     NumberArray* res = malloc(sizeof(NumberArray));
     *res = (NumberArray){count, arr};
+
+    i = count;
+    while(i != 0){
+        j = ((float)(rand()) / RAND_MAX)*i;
+        number_array_swap(res, --i, j);
+    }
 
     return res;
 }
