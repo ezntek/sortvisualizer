@@ -8,7 +8,7 @@ dependencies = [
 
 sources = [
   'src/main.c',
-  'src/number.c',
+  'src/array.c',
 ]
 
 executable('sortvisualizer',
