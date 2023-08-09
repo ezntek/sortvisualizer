@@ -1,17 +1,19 @@
 #include <raylib.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "array.h"
 #include "config.h"
-#include "util.h"
 
 Bar make_bar(int value, size_t idx) {
     float bar_width = (float)WIN_WIDTH / ELEMS - BARS_PADDING;
     float bar_height = value * HEIGHT_SCALE_FACTOR;
-    float bar_x = (idx * bar_width) + (BARS_PADDING * idx);
+    float bar_x = idx * bar_width + BARS_PADDING * idx;
     float bar_y = WIN_HEIGHT - bar_height;
 
+    printf("new bar: x:%.1f y:%.1f w:%.1f h:%.1f\n", bar_x, bar_y, bar_width,
+           bar_height);
     Rectangle rect = (Rectangle){bar_x, bar_y, bar_width, bar_height};
     return (Bar){
         .value = value,
@@ -27,7 +29,7 @@ Bar* new_bar(int value, size_t idx) {
 }
 
 void bar_render(Bar* bar, bool is_target) {
-    Color color = BLACK;
+    Color color = WHITE;
     if (is_target)
         color = RED;
 
@@ -49,7 +51,7 @@ BarArray* new_bar_array(int count, int max) {
     Bar** bars = malloc(sizeof(Bar) * count);
 
     srand(time(NULL));
-    for (size_t i = 0; i < max; i++) {
+    for (size_t i = 0; i < count; i++) {
         int value = rand() % max;
         bars[i] = new_bar(value, i);
     }
@@ -57,7 +59,8 @@ BarArray* new_bar_array(int count, int max) {
     *res = (BarArray){
         ._bars = bars,
         .length = count,
-        .accesses = (struct Accesses){NULL, NULL},
+        .accesses = (struct Accesses){0, 0},
+        .targets = (struct Targets){0, 0},
     };
 
     return res;
@@ -65,7 +68,10 @@ BarArray* new_bar_array(int count, int max) {
 
 void bar_array_render(BarArray* b_arr) {
     for (size_t i = 0; i < b_arr->length; i++) {
-        bar_render(b_arr->_bars[i], false);
+        bool is_target = false;
+        if (b_arr->targets.first == i || b_arr->targets.second == i)
+            is_target = true;
+        bar_render(b_arr->_bars[i], is_target);
     }
 }
 
@@ -75,7 +81,7 @@ int bar_array_get(BarArray* b_arr, size_t idx) {
         exit(1);
     }
     b_arr->accesses.read++;
-    access_delay();
+    sleep_for_access_delay();
     return b_arr->_bars[idx]->value;
 }
 
@@ -86,7 +92,7 @@ Bar* bar_array_get_bar(BarArray* b_arr, size_t idx) {
     }
 
     b_arr->accesses.read++;
-    access_delay();
+    sleep_for_access_delay();
     return b_arr->_bars[idx];
 }
 
@@ -97,7 +103,7 @@ void bar_array_set(BarArray* b_arr, size_t idx, int value) {
     }
 
     b_arr->accesses.write++;
-    access_delay();
+    sleep_for_access_delay();
     bar_set_value(bar_array_get_bar(b_arr, idx), value);
 }
 
@@ -108,13 +114,15 @@ void bar_array_set_bar(BarArray* b_arr, size_t idx, Bar* bar) {
     }
 
     b_arr->accesses.write++;
-    access_delay();
+    sleep_for_access_delay();
     b_arr->_bars[idx] = bar;
 }
 
 void bar_array_swap(BarArray* b_arr, size_t idx1, size_t idx2) {
     Bar* a = bar_array_get_bar(b_arr, idx1);
-    Bar* b = bar_array_get_bar(b_arr, idx1);
+    Bar* b = bar_array_get_bar(b_arr, idx2);
+
+    b_arr->accesses.write += 2;
 
     int tmp = a->value;
     bar_set_value(a, b->value);

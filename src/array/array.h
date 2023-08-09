@@ -9,7 +9,7 @@ struct Accesses {
     size_t write;
 };
 
-struct Target {
+struct Targets {
     size_t first;
     size_t second;
 };
@@ -22,6 +22,7 @@ typedef struct Bar {
 typedef struct BarArray {
     size_t length;
 
+    struct Targets targets;
     struct Accesses accesses;
     Bar** _bars;
 } BarArray;
