@@ -6,49 +6,21 @@
 #include "array.h"
 #include "config.h"
 
-Bar make_bar(int value, size_t idx) {
-    float bar_width = (float)WIN_WIDTH / ELEMS - BARS_PADDING;
-    float bar_height = value * HEIGHT_SCALE_FACTOR;
-    float bar_x = idx * bar_width + BARS_PADDING * idx;
-    float bar_y = WIN_HEIGHT - bar_height;
-
-    printf("new bar: x:%.1f y:%.1f w:%.1f h:%.1f\n", bar_x, bar_y, bar_width,
-           bar_height);
-    Rectangle rect = (Rectangle){bar_x, bar_y, bar_width, bar_height};
-    return (Bar){
-        .value = value,
-        .rect = rect,
+BarArray* new_bar_array(Bar** bar_slice, size_t length) {
+    BarArray* res = malloc(sizeof(BarArray));
+    *res = (BarArray){
+        ._bars = bar_slice,
+        .length = length,
+        .accesses = (struct Accesses){0, 0},
+        .targets = (struct Targets){0, 0},
     };
-}
-
-Bar* new_bar(int value, size_t idx) {
-    Bar* res = malloc(sizeof(Bar));
-    *res = make_bar(value, idx);
 
     return res;
 }
 
-void bar_render(Bar* bar, bool is_target) {
-    Color color = WHITE;
-    if (is_target)
-        color = RED;
-
-    DrawRectangleRec(bar->rect, color);
-}
-
-void bar_set_value(Bar* bar, int new_val) {
-    float new_height = new_val * HEIGHT_SCALE_FACTOR;
-    bar->rect.y = WIN_HEIGHT - new_height;
-    bar->rect.height = new_height;
-
-    bar->value = new_val;
-}
-
-void bar_unload(Bar* bar) { free(bar); }
-
-BarArray* new_bar_array(int count, int max) {
+BarArray* new_bar_array_random(int count, int max) {
     BarArray* res = malloc(sizeof(BarArray));
-    Bar** bars = malloc(sizeof(Bar) * count);
+    Bar** bars = malloc(sizeof(Bar*) * count);
 
     srand(time(NULL));
     for (size_t i = 0; i < count; i++) {
@@ -128,6 +100,20 @@ void bar_array_swap(BarArray* b_arr, size_t idx1, size_t idx2) {
     bar_set_value(a, b->value);
     bar_set_value(b, tmp);
 }
+
+BarArray* bar_array_split_left(BarArray* b_arr, size_t idx_until) {
+    BarArray* new_bar_arr = malloc(sizeof(BarArray));
+
+    Bar* bars_slice[idx_until];
+    for (size_t i = 0; i < idx_until; i++)
+        bars_slice[i] = bar_array_get_bar(b_arr, i);
+
+    new_bar_arr = new_bar_array(bars_slice, idx_until);
+
+    return new_bar_arr;
+}
+
+BarArray* bar_array_split_right(BarArray* b_arr, size_t idx_from) {}
 
 void bar_array_unload(BarArray* b_arr) {
     for (size_t i = 0; i < b_arr->length; i++)

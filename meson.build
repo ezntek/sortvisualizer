@@ -13,6 +13,7 @@ sources = [
   'src/algorithms/select.c',
   'src/algorithms/insert.c',
   'src/array/array.c',
+  'src/array/bar.c',
 ]
 
 executable('sortvisualizer',

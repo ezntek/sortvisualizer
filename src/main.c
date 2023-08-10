@@ -54,7 +54,7 @@ void run_sort(BarArray* arr, UpdateCallback upd) {
 }
 
 int main() {
-    struct State s = (struct State){new_bar_array(ELEMS, 1000)};
+    struct State s = (struct State){new_bar_array_random(ELEMS, 1000)};
 
     init(&s);
     run_sort(s.arr, update);

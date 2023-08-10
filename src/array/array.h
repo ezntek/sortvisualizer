@@ -4,6 +4,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include "bar.h"
+
 struct Accesses {
     size_t read;
     size_t write;
@@ -14,11 +16,6 @@ struct Targets {
     size_t second;
 };
 
-typedef struct Bar {
-    int value;
-    Rectangle rect;
-} Bar;
-
 typedef struct BarArray {
     size_t length;
 
@@ -27,20 +24,10 @@ typedef struct BarArray {
     Bar** _bars;
 } BarArray;
 
-// value, parent array index
-Bar make_bar(int, size_t);
-// value, parent array index
-Bar* new_bar(int, size_t);
-
-// bar, is targeted
-void bar_render(Bar*, bool);
-// bar, new value
-void bar_set_value(Bar*, int);
-// bar
-void bar_unload(Bar*);
-
+// slice with the Bar*'s inside, length
+BarArray* new_bar_array(Bar**, size_t);
 // count, max value
-BarArray* new_bar_array(int, int);
+BarArray* new_bar_array_random(int, int);
 
 // bar array
 void bar_array_render(BarArray*);
@@ -54,5 +41,9 @@ void bar_array_set(BarArray*, size_t, int);
 void bar_array_set_bar(BarArray*, size_t, Bar*);
 // bar array, index, index
 void bar_array_swap(BarArray*, size_t, size_t);
+// bar array, split-until
+BarArray* bar_array_split_left(BarArray*, size_t);
+// bar array, split-till
+BarArray* bar_array_split_right(BarArray*, size_t);
 // bar array
 void bar_array_unload(BarArray*);
