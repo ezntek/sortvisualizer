@@ -46,10 +46,7 @@ void bar_array_render(BarArray* b_arr) {
             is_target = true;
         Bar* bar = b_arr->_bars[i];
         bar_render(bar, is_target);
-
-        printf("%d, ", bar->value);
     }
-    printf("\n");
 }
 
 int bar_array_get(BarArray* b_arr, size_t idx) {
