@@ -6,17 +6,17 @@
  *
  * Refer to `src/util.h` for more info.
  */
-static Algorithm ALGORITHM = MERGE;
+static Algorithm ALGORITHM = SELECT;
 
 /* Set the window width and height. */
 static const int WIN_WIDTH = 1200;
 static const int WIN_HEIGHT = 800;
 
 /* Change the padding between bars (pixels). */
-static const int BARS_PADDING = 5;
+static const int BARS_PADDING = 2;
 
 /* Change how many elements are supposed to be sorted.. */
-static const int ELEMS = 10;
+static const int ELEMS = 200;
 
 /* Height scale factor.
  * Changes how much numbers should be scaled on the screen.
@@ -27,4 +27,4 @@ static const int ELEMS = 10;
 static const float HEIGHT_SCALE_FACTOR = 0.8;
 
 /* Set the array access delay (miliseconds.) */
-static const float ARR_ACCESS_DELAY = 10;
+static const float ARR_ACCESS_DELAY = 1;
