@@ -8,6 +8,7 @@ typedef enum Algorithm {
     SELECT,
     BUBBLE,
     INSERT,
+    MERGE,
 } Algorithm;
 
 void sleep_for_access_delay();

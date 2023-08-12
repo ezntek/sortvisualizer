@@ -11,6 +11,7 @@ sources = [
   'src/util.c',
   'src/algorithms/bubble.c',
   'src/algorithms/select.c',
+  'src/algorithms/merge.c',
   'src/algorithms/insert.c',
   'src/array/array.c',
   'src/array/bar.c',

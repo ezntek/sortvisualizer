@@ -5,6 +5,7 @@
 
 #include "array.h"
 #include "config.h"
+#include "src/array/bar.h"
 
 BarArray* new_bar_array(Bar** bar_slice, size_t length) {
     BarArray* res = malloc(sizeof(BarArray));
@@ -43,13 +44,19 @@ void bar_array_render(BarArray* b_arr) {
         bool is_target = false;
         if (b_arr->targets.first == i || b_arr->targets.second == i)
             is_target = true;
-        bar_render(b_arr->_bars[i], is_target);
+        Bar* bar = b_arr->_bars[i];
+        bar_render(bar, is_target);
+
+        printf("%d, ", bar->value);
     }
+    printf("\n");
 }
 
 int bar_array_get(BarArray* b_arr, size_t idx) {
     if (idx >= b_arr->length) {
-        printf("fatal: attemped to %d outside of the array bounds", (int)idx);
+        printf(
+            "fatal: attemped to index %d which is outside of the array bounds",
+            (int)idx);
         exit(1);
     }
     b_arr->accesses.read++;
@@ -59,7 +66,9 @@ int bar_array_get(BarArray* b_arr, size_t idx) {
 
 Bar* bar_array_get_bar(BarArray* b_arr, size_t idx) {
     if (idx >= b_arr->length) {
-        printf("fatal: attemped to %d outside of the array bounds", (int)idx);
+        printf(
+            "fatal: attemped to index %d which is outside of the array bounds",
+            (int)idx);
         exit(1);
     }
 
@@ -70,7 +79,9 @@ Bar* bar_array_get_bar(BarArray* b_arr, size_t idx) {
 
 void bar_array_set(BarArray* b_arr, size_t idx, int value) {
     if (idx >= b_arr->length) {
-        printf("fatal: attemped to %d outside of the array bounds", (int)idx);
+        printf(
+            "fatal: attemped to index %d which is outside of the array bounds",
+            (int)idx);
         exit(1);
     }
 
@@ -81,7 +92,9 @@ void bar_array_set(BarArray* b_arr, size_t idx, int value) {
 
 void bar_array_set_bar(BarArray* b_arr, size_t idx, Bar* bar) {
     if (idx >= b_arr->length) {
-        printf("fatal: attemped to %d outside of the array bounds", (int)idx);
+        printf(
+            "fatal: attemped to index %d which is outside of the array bounds",
+            (int)idx);
         exit(1);
     }
 
@@ -102,21 +115,27 @@ void bar_array_swap(BarArray* b_arr, size_t idx1, size_t idx2) {
 }
 
 BarArray* bar_array_split_left(BarArray* b_arr, size_t idx_until) {
-    BarArray* new_bar_arr = malloc(sizeof(BarArray));
+    Bar** bars_slice = malloc(sizeof(Bar*) * idx_until);
 
-    Bar* bars_slice[idx_until];
     for (size_t i = 0; i < idx_until; i++)
-        bars_slice[i] = bar_array_get_bar(b_arr, i);
+        bars_slice[i] = b_arr->_bars[i];
 
-    new_bar_arr = new_bar_array(bars_slice, idx_until);
-
-    return new_bar_arr;
+    return new_bar_array(bars_slice, idx_until);
 }
 
-BarArray* bar_array_split_right(BarArray* b_arr, size_t idx_from) {}
+BarArray* bar_array_split_right(BarArray* b_arr, size_t idx_from) {
+    size_t length = b_arr->length - idx_from;
+    Bar** bars_slice = malloc(sizeof(Bar*) * length);
+
+    for (size_t i = idx_from; i < b_arr->length; i++)
+        bars_slice[i - idx_from] = b_arr->_bars[i];
+
+    return new_bar_array(bars_slice, length);
+}
 
 void bar_array_unload(BarArray* b_arr) {
     for (size_t i = 0; i < b_arr->length; i++)
-        free(bar_array_get_bar(b_arr, i));
+        free(b_arr->_bars[i]);
+    free(b_arr->_bars); // do free the pointer holding the pointers itself
     free(b_arr);
 }

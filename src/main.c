@@ -50,6 +50,9 @@ void run_sort(BarArray* arr, UpdateCallback upd) {
     case SELECT:
         select_sort(arr, upd);
         return;
+    case MERGE:
+        merge_sort(arr, upd);
+        return;
     }
 }
 
