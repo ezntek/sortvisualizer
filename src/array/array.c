@@ -1,6 +1,7 @@
 #include <raylib.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 #include "array.h"
@@ -114,8 +115,11 @@ void bar_array_swap(BarArray* b_arr, size_t idx1, size_t idx2) {
 BarArray* bar_array_split_left(BarArray* b_arr, size_t idx_until) {
     Bar** bars_slice = malloc(sizeof(Bar*) * idx_until);
 
-    for (size_t i = 0; i < idx_until; i++)
-        bars_slice[i] = b_arr->_bars[i];
+    for (size_t i = 0; i < idx_until; i++) {
+        Bar* bar = malloc(sizeof(Bar));
+        memcpy(bar, b_arr->_bars[i], sizeof(Bar));
+        bars_slice[i] = bar;
+    }
 
     return new_bar_array(bars_slice, idx_until);
 }

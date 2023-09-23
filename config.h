@@ -6,7 +6,7 @@
  *
  * Refer to `src/util.h` for more info.
  */
-static Algorithm ALGORITHM = SELECT;
+static Algorithm ALGORITHM = MERGE;
 
 /* Set the window width and height. */
 static const int WIN_WIDTH = 1200;

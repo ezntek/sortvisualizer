@@ -48,4 +48,6 @@ void merge_sort(BarArray* arr, UpdateCallback upd) {
     }
 
     upd(full_arr);
+    upd(left_arr);
+    upd(right_arr);
 }
